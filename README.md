@@ -1,8 +1,6 @@
-# Disclaimer: Action Culling
+# Endwalker Incoming
 
-There's been a lot of actions in here that I've been sort of iffy about ever since I added them; whether they were too cheaty, made things too automatic, or such, since I was mostly following recommendations from friends.
-Having talked with moderators on the Dalamud/XIVLauncher discord, I've come to the conclusion that I'll be removing actions that are *too* automated. I know this probably won't go over well with everyone, but ultimately I want to make sure people can use this plugin guilt-free, as it's mostly meant to be what I want my own version of XIVCombo to be.
-I apologize for any upset this might cause; it was ultimately something I felt like I had to do, to keep things clean.
+As many people obviously know, Endwalker is releasing (practically) on Nov 19. On top of Dalamud going to be out of commission for what is an indeterminate amount of time - could be a few hours, could be days, could be weeks - loads of new actions are getting added, and current actions are getting changed. As a result, this plugin may take a bit to properly update, especially since I won't be at level 90 on all jobs for a good while. For now, I'm going to likely make a compatibility update that keeps current features (and prunes some that are no longer necessary or might be downright in-the-way, like PLD's spells replacing their combos, since Requiescat got reworked so you can use it way before you actually start casting spells), and add some untested ones that will be marked as such. Those will be features that I have figured out the logic for (like on SAM, for their new Ikishoten-based ability), but obviously cannot test until I reach the level to unlock said abilities. I will probably put up an issues thread for people to document any issues they mave with them, but it's going to be rocky for a while. As such, don't expect things to be smooth until everything is thoroughly tested. And, as always, all features added to Expanded and the base plugin will be in this one, as well.
 
 # XIVComboPlugin Expandedest
 This is an expanded version of Daemitus's XIVCombo Expanded for personal use, that I am modifying for personal use by adding features that me and friends would like to use. These can be used in any fork you like, no credit needed. None of these features will be added to the original XIVCombo, so please do not bug the creator of that about it. Thank you Daemitus, attickdoor, goaaats, and everyone else who contributed to making this plugin possible. Additional thanks to ALymphocyte for coding help!
@@ -65,3 +63,10 @@ For some jobs, this frees a massive amount of hotbar space (looking at you, DRG)
 ![](https://github.com/attickdoor/xivcomboplugin/raw/master/res/souleater_combo.gif)
 ![](https://github.com/attickdoor/xivcomboplugin/raw/master/res/hypercharge_heat_blast.gif)
 ![](https://github.com/attickdoor/xivcomboplugin/raw/master/res/eno_swap.gif)
+
+
+# Old Disclaimer: Action Culling
+
+There's been a lot of actions in here that I've been sort of iffy about ever since I added them; whether they were too cheaty, made things too automatic, or such, since I was mostly following recommendations from friends.
+Having talked with moderators on the Dalamud/XIVLauncher discord, I've come to the conclusion that I'll be removing actions that are *too* automated. I know this probably won't go over well with everyone, but ultimately I want to make sure people can use this plugin guilt-free, as it's mostly meant to be what I want my own version of XIVCombo to be.
+I apologize for any upset this might cause; it was ultimately something I felt like I had to do, to keep things clean.

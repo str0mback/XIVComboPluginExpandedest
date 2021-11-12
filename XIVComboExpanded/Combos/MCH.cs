@@ -89,13 +89,13 @@ namespace XIVComboExpandedestPlugin.Combos
                 var ricochetCd = GetCooldown(MCH.Ricochet);
 
                 // Prioritize the original if both are off cooldown
-                if (!gaussCd.IsCooldown && !ricochetCd.IsCooldown)
+                if (!gaussCd.IsCooldown && !ricochetCd.IsCooldown && level >= MCH.Levels.Ricochet)
                     return actionID;
 
-                if (gaussCd.CooldownRemaining < ricochetCd.CooldownRemaining)
-                    return MCH.GaussRound;
-                else
+                if (gaussCd.CooldownRemaining > ricochetCd.CooldownRemaining && level >= MCH.Levels.Ricochet)
                     return MCH.Ricochet;
+                else
+                    return MCH.GaussRound;
             }
 
             return actionID;

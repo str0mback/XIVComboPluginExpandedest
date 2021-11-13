@@ -85,9 +85,9 @@ namespace XIVComboExpandedestPlugin.Combos
         {
             if (actionID == DRK.StalwartSoul)
             {
+                var gauge = GetJobGauge<DRKGauge>();
                 if (IsEnabled(CustomComboPreset.DRKOvercapFeature))
                 {
-                    var gauge = GetJobGauge<DRKGauge>();
                     if (gauge.Blood >= 90 && HasEffect(DRK.Buffs.BloodWeapon))
                         return DRK.Quietus;
                 }
@@ -99,7 +99,11 @@ namespace XIVComboExpandedestPlugin.Combos
                 }
 
                 if (comboTime > 0 && lastComboMove == DRK.Unleash && level >= DRK.Levels.StalwartSoul)
+                {
+                    if (IsEnabled(CustomComboPreset.DRKOvercapFeature) && (gauge.Blood >= 90 || (gauge.Blood >= 80 && HasEffect(DRK.Buffs.BloodWeapon))))
+                        return DRK.Quietus;
                     return DRK.StalwartSoul;
+                }
 
                 return DRK.Unleash;
             }

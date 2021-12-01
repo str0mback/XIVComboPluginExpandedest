@@ -28,7 +28,7 @@ namespace XIVComboExpandedestPlugin.Combos
 
         public static class Buffs
         {
-            public const short
+            public const ushort
                 NoMercy = 1831,
                 ReadyToRip = 1842,
                 ReadyToTear = 1843,
@@ -37,7 +37,7 @@ namespace XIVComboExpandedestPlugin.Combos
 
         public static class Debuffs
         {
-            public const short
+            public const ushort
                 BowShock = 1838;
         }
 
@@ -115,6 +115,30 @@ namespace XIVComboExpandedestPlugin.Combos
         }
     }
 
+    internal class GunbreakerBowShockSonicBreakFeature : CustomCombo
+    {
+        protected override CustomComboPreset Preset => CustomComboPreset.GunbreakerBowShockSonicBreakFeature;
+
+        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        {
+            if (actionID == GNB.BowShock || actionID == GNB.SonicBreak)
+            {
+                var bowCd = GetCooldown(GNB.BowShock);
+                var sonicCd = GetCooldown(GNB.SonicBreak);
+
+                // Prioritize the original if both are off cooldown
+                if (!bowCd.IsCooldown && !sonicCd.IsCooldown)
+                    return actionID;
+
+                return bowCd.CooldownRemaining < sonicCd.CooldownRemaining
+                    ? GNB.BowShock
+                    : GNB.SonicBreak;
+            }
+
+            return actionID;
+        }
+    }
+
     internal class GunbreakerDemonSlaughterCombo : CustomCombo
     {
         protected override CustomComboPreset Preset => CustomComboPreset.GunbreakerDemonSlaughterCombo;
@@ -171,11 +195,16 @@ namespace XIVComboExpandedestPlugin.Combos
             {
                 if (HasEffect(GNB.Buffs.NoMercy))
                 {
-                    if (level >= GNB.Levels.BowShock && !TargetHasEffect(GNB.Debuffs.BowShock))
-                        return GNB.BowShock;
+                    var bowCd = GetCooldown(GNB.BowShock);
+                    var sonicCd = GetCooldown(GNB.SonicBreak);
 
-                    if (level >= GNB.Levels.SonicBreak)
-                        return GNB.SonicBreak;
+                    // Prioritize Bow Shock if both are off cooldown
+                    if (!bowCd.IsCooldown && !sonicCd.IsCooldown)
+                        return level >= GNB.Levels.BowShock ? GNB.BowShock : GNB.SonicBreak;
+
+                    return bowCd.CooldownRemaining < sonicCd.CooldownRemaining
+                        ? GNB.BowShock
+                        : GNB.SonicBreak;
                 }
             }
 

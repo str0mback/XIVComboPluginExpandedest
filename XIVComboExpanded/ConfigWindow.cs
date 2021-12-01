@@ -8,6 +8,7 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
 using Dalamud.Utility;
 using ImGuiNET;
+using XIVComboExpandedestPlugin.Attributes;
 
 namespace XIVComboExpandedestPlugin
 {
@@ -29,13 +30,16 @@ namespace XIVComboExpandedestPlugin
 
             this.groupedPresets = Enum
                 .GetValues<CustomComboPreset>()
-                .Select(preset => (preset, Info: preset.GetAttribute<CustomComboInfoAttribute>()))
-                .Where(presetWithInfo => presetWithInfo.Info != null)
-                .OrderBy(presetWithInfo => presetWithInfo.Info.JobName)
-                .GroupBy(presetWithInfo => presetWithInfo.Info.JobName)
+                .Select(preset => (
+                    PresetInfo: (preset, Info: preset.GetAttribute<CustomComboInfoAttribute>()),
+                    Ordering: preset.GetAttribute<OrderedEnumAttribute>()))
+                .Where(tpl => tpl.PresetInfo.Info != null && tpl.Ordering != null)
+                .OrderBy(tpl => tpl.PresetInfo.Info.JobName)
+                .ThenBy(tpl => tpl.Ordering.Order)
+                .GroupBy(tpl => tpl.PresetInfo.Info.JobName)
                 .ToDictionary(
-                    presetWithInfos => presetWithInfos.Key,
-                    presetWithInfos => presetWithInfos.ToList());
+                    tpl => tpl.Key,
+                    tpl => tpl.Select(tpl => tpl.PresetInfo).ToList());
 
             this.SizeCondition = ImGuiCond.FirstUseEver;
             this.Size = new Vector2(740, 490);

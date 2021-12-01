@@ -1,3 +1,5 @@
+using System;
+
 using Dalamud.Game.ClientState.JobGauge.Types;
 
 namespace XIVComboExpandedestPlugin.Combos
@@ -7,31 +9,39 @@ namespace XIVComboExpandedestPlugin.Combos
         public const byte JobID = 31;
 
         public const uint
+            // Single target
             CleanShot = 2873,
             HeatedCleanShot = 7413,
             SplitShot = 2866,
             HeatedSplitShot = 7411,
             SlugShot = 2868,
+            HeatedSlugshot = 7412,
+            // Charges
             GaussRound = 2874,
             Ricochet = 2890,
-            HeatedSlugshot = 7412,
-            Hypercharge = 17209,
-            HeatBlast = 7410,
+            // AoE
             SpreadShot = 2870,
             AutoCrossbow = 16497,
+            // Rook
             RookAutoturret = 2864,
             RookOverdrive = 7415,
             AutomatonQueen = 16501,
-            QueenOverdrive = 16502;
+            QueenOverdrive = 16502,
+            // Other
+            Hypercharge = 17209,
+            HeatBlast = 7410,
+            HotShot = 2872,
+            Drill = 16498,
+            AirAnchor = 16500;
 
         public static class Buffs
         {
-            // public const short placeholder = 0;
+            public const ushort Placeholder = 0;
         }
 
         public static class Debuffs
         {
-            // public const short placeholder = 0;
+            public const ushort Placeholder = 0;
         }
 
         public static class Levels
@@ -46,9 +56,11 @@ namespace XIVComboExpandedestPlugin.Combos
                 Ricochet = 50,
                 AutoCrossbow = 52,
                 HeatedSplitShot = 54,
+                Drill = 58,
                 HeatedSlugshot = 60,
                 HeatedCleanShot = 64,
                 ChargedActionMastery = 74,
+                AirAnchor = 76,
                 QueenOverdrive = 80;
         }
     }
@@ -85,17 +97,23 @@ namespace XIVComboExpandedestPlugin.Combos
         {
             if (actionID == MCH.GaussRound || actionID == MCH.Ricochet)
             {
-                var gaussCd = GetCooldown(MCH.GaussRound);
-                var ricochetCd = GetCooldown(MCH.Ricochet);
+                if (level >= MCH.Levels.Ricochet)
+                {
+                    var gauss = (MCH.GaussRound, GetCooldown(MCH.GaussRound));
+                    var ricochet = (MCH.Ricochet, GetCooldown(MCH.Ricochet));
 
-                // Prioritize the original if both are off cooldown
-                if (!gaussCd.IsCooldown && !ricochetCd.IsCooldown && level >= MCH.Levels.Ricochet)
+                    // Prioritize whichever is slotted action.
+                    (actionID, _) = actionID switch
+                    {
+                        MCH.GaussRound => CalcBestAction(gauss, ricochet),
+                        MCH.Ricochet => CalcBestAction(ricochet, gauss),
+                        _ => throw new NotImplementedException(),
+                    };
+
                     return actionID;
+                }
 
-                if (gaussCd.CooldownRemaining > ricochetCd.CooldownRemaining && level >= MCH.Levels.Ricochet)
-                    return MCH.Ricochet;
-                else
-                    return MCH.GaussRound;
+                return MCH.GaussRound;
             }
 
             return actionID;
@@ -149,7 +167,55 @@ namespace XIVComboExpandedestPlugin.Combos
             {
                 var gauge = GetJobGauge<MCHGauge>();
                 if (gauge.IsRobotActive)
+                    // ROOKIE
                     return OriginalHook(MCH.QueenOverdrive);
+            }
+
+            return actionID;
+        }
+    }
+
+    internal class MachinistDrillAirAnchorFeature : CustomCombo
+    {
+        protected override CustomComboPreset Preset => CustomComboPreset.MachinistDrillAirAnchorFeature;
+
+        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        {
+            if (actionID == MCH.Drill || actionID == MCH.HotShot || actionID == MCH.AirAnchor)
+            {
+                if (level >= MCH.Levels.AirAnchor)
+                {
+                    var drill = (MCH.Drill, GetCooldown(MCH.Drill));
+                    var anchor = (MCH.AirAnchor, GetCooldown(MCH.AirAnchor));
+
+                    // Prioritize whichever is slotted action.
+                    (actionID, _) = actionID switch
+                    {
+                        MCH.Drill => CalcBestAction(drill, anchor),
+                        MCH.AirAnchor => CalcBestAction(anchor, drill),
+                        _ => throw new NotImplementedException(),
+                    };
+
+                    return actionID;
+                }
+
+                if (level >= MCH.Levels.Drill)
+                {
+                    var drill = (MCH.Drill, GetCooldown(MCH.Drill));
+                    var hotshot = (MCH.HotShot, GetCooldown(MCH.HotShot));
+
+                    // Prioritize whichever is slotted action.
+                    (actionID, _) = actionID switch
+                    {
+                        MCH.Drill => CalcBestAction(drill, hotshot),
+                        MCH.HotShot => CalcBestAction(hotshot, drill),
+                        _ => throw new NotImplementedException(),
+                    };
+
+                    return actionID;
+                }
+
+                return MCH.HotShot;
             }
 
             return actionID;

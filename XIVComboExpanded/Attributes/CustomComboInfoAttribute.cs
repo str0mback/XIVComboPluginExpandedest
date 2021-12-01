@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XIVComboExpandedestPlugin
+namespace XIVComboExpandedestPlugin.Attributes
 {
     /// <summary>
     /// Attribute documenting additional information for each combo.

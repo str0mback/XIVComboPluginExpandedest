@@ -16,7 +16,7 @@ namespace XIVComboExpandedestPlugin.Combos
 
         public static class Buffs
         {
-            public const short
+            public const ushort
                 Swiftcast = 167;
         }
 

@@ -17,12 +17,12 @@ namespace XIVComboExpandedestPlugin.Combos
 
         public static class Buffs
         {
-            // public const short placeholder = 0;
+            public const ushort Placeholder = 0;
         }
 
         public static class Debuffs
         {
-            // public const short placeholder = 0;
+            public const ushort Placeholder = 0;
         }
 
         public static class Levels
@@ -40,10 +40,13 @@ namespace XIVComboExpandedestPlugin.Combos
 
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
         {
-            var gauge = GetJobGauge<WHMGauge>();
+            if (actionID == WHM.AfflatusSolace)
+            {
+                var gauge = GetJobGauge<WHMGauge>();
 
-            if (gauge.BloodLily == 3)
-                return WHM.AfflatusMisery;
+                if (gauge.BloodLily == 3)
+                    return WHM.AfflatusMisery;
+            }
 
             return actionID;
         }
@@ -55,10 +58,13 @@ namespace XIVComboExpandedestPlugin.Combos
 
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
         {
-            var gauge = GetJobGauge<WHMGauge>();
+            if (actionID == WHM.AfflatusRapture)
+            {
+                var gauge = GetJobGauge<WHMGauge>();
 
-            if (gauge.BloodLily == 3)
-                return WHM.AfflatusMisery;
+                if (gauge.BloodLily == 3)
+                    return WHM.AfflatusMisery;
+            }
 
             return actionID;
         }
@@ -70,8 +76,11 @@ namespace XIVComboExpandedestPlugin.Combos
 
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
         {
-            if (level < WHM.Levels.Cure2)
-                return WHM.Cure;
+            if (actionID == WHM.Cure2)
+            {
+                if (level < WHM.Levels.Cure2)
+                    return WHM.Cure;
+            }
 
             return actionID;
         }
@@ -83,10 +92,9 @@ namespace XIVComboExpandedestPlugin.Combos
 
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
         {
-            var gauge = GetJobGauge<WHMGauge>();
-
             if (actionID == WHM.Cure2)
             {
+                var gauge = GetJobGauge<WHMGauge>();
                 if (IsEnabled(CustomComboPreset.WhiteMageSolaceMiseryFeature) && gauge.BloodLily == 3)
                     return WHM.AfflatusMisery;
                 if (level >= WHM.Levels.AfflatusSolace && gauge.Lily > 0)
@@ -95,6 +103,7 @@ namespace XIVComboExpandedestPlugin.Combos
 
             if (actionID == WHM.Medica)
             {
+                var gauge = GetJobGauge<WHMGauge>();
                 if (IsEnabled(CustomComboPreset.WhiteMageRaptureMiseryFeature) && gauge.BloodLily == 3 && level >= WHM.Levels.AfflatusRapture)
                     return WHM.AfflatusMisery;
                 if (level >= WHM.Levels.AfflatusRapture && gauge.Lily > 0)

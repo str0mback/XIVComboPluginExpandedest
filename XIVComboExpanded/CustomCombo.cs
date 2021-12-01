@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.JobGauge.Types;
@@ -6,6 +8,7 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.ClientState.Statuses;
 using Dalamud.Utility;
+using XIVComboExpandedestPlugin.Attributes;
 
 namespace XIVComboExpandedestPlugin.Combos
 {
@@ -14,6 +17,8 @@ namespace XIVComboExpandedestPlugin.Combos
     /// </summary>
     internal abstract partial class CustomCombo
     {
+        private static readonly Dictionary<Type, JobGaugeBase> JobGaugeCache = new();
+
         private const uint InvalidObjectID = 0xE000_0000;
 
         /// <summary>
@@ -92,6 +97,32 @@ namespace XIVComboExpandedestPlugin.Combos
         }
 
         /// <summary>
+        /// Calculate the best action to use, based on cooldown remaining.
+        /// </summary>
+        /// <param name="actions">Action data.</param>
+        /// <returns>The appropriate action to use.</returns>
+        protected static (uint ActionID, IconReplacer.CooldownData Data) CalcBestAction(params (uint ActionID, IconReplacer.CooldownData Data)[] actions)
+        {
+            static (uint ActionID, IconReplacer.CooldownData Data) Compare(
+                (uint ActionID, IconReplacer.CooldownData Data) a1,
+                (uint ActionID, IconReplacer.CooldownData Data) a2)
+            {
+                // Neither, return the first parameter
+                if (!a1.Data.IsCooldown && !a2.Data.IsCooldown)
+                    return a1;
+
+                // Both, return soonest available
+                if (a1.Data.IsCooldown && a2.Data.IsCooldown)
+                    return a1.Data.CooldownRemaining < a2.Data.CooldownRemaining ? a1 : a2;
+
+                // One or the other
+                return a1.Data.IsCooldown ? a2 : a1;
+            }
+
+            return actions.Aggregate((a1, a2) => Compare(a1, a2));
+        }
+
+        /// <summary>
         /// Invokes the combo.
         /// </summary>
         /// <param name="actionID">Starting action ID.</param>
@@ -144,7 +175,7 @@ namespace XIVComboExpandedestPlugin.Combos
         /// </summary>
         /// <param name="effectID">Status effect ID.</param>
         /// <returns>A value indicating if the effect exists.</returns>
-        protected static bool HasEffect(short effectID) => FindEffect(effectID) is not null;
+        protected static bool HasEffect(ushort effectID) => FindEffect(effectID) is not null;
 
         /// <summary>
         /// Finds an effect on the player.
@@ -152,7 +183,7 @@ namespace XIVComboExpandedestPlugin.Combos
         /// </summary>
         /// <param name="effectID">Status effect ID.</param>
         /// <returns>Status object or null.</returns>
-        protected static Status? FindEffect(short effectID) => FindEffect(effectID, LocalPlayer, LocalPlayer?.ObjectId);
+        protected static Status? FindEffect(ushort effectID) => FindEffect(effectID, LocalPlayer, LocalPlayer?.ObjectId);
 
         /// <summary>
         /// Find if an effect on the target exists.
@@ -160,7 +191,7 @@ namespace XIVComboExpandedestPlugin.Combos
         /// </summary>
         /// <param name="effectID">Status effect ID.</param>
         /// <returns>A value indicating if the effect exists.</returns>
-        protected static bool TargetHasEffect(short effectID) => FindTargetEffect(effectID) is not null;
+        protected static bool TargetHasEffect(ushort effectID) => FindTargetEffect(effectID) is not null;
 
         /// <summary>
         /// Finds an effect on the current target.
@@ -168,7 +199,7 @@ namespace XIVComboExpandedestPlugin.Combos
         /// </summary>
         /// <param name="effectID">Status effect ID.</param>
         /// <returns>Status object or null.</returns>
-        protected static Status? FindTargetEffect(short effectID) => FindEffect(effectID, CurrentTarget, LocalPlayer?.ObjectId);
+        protected static Status? FindTargetEffect(ushort effectID) => FindEffect(effectID, CurrentTarget, LocalPlayer?.ObjectId);
 
         /// <summary>
         /// Find if an effect on the player exists.
@@ -176,7 +207,7 @@ namespace XIVComboExpandedestPlugin.Combos
         /// </summary>
         /// <param name="effectID">Status effect ID.</param>
         /// <returns>A value indicating if the effect exists.</returns>
-        protected static bool HasEffectAny(short effectID) => FindEffectAny(effectID) is not null;
+        protected static bool HasEffectAny(ushort effectID) => FindEffectAny(effectID) is not null;
 
         /// <summary>
         /// Finds an effect on the player.
@@ -184,7 +215,7 @@ namespace XIVComboExpandedestPlugin.Combos
         /// </summary>
         /// <param name="effectID">Status effect ID.</param>
         /// <returns>Status object or null.</returns>
-        protected static Status? FindEffectAny(short effectID) => FindEffect(effectID, LocalPlayer, null);
+        protected static Status? FindEffectAny(ushort effectID) => FindEffect(effectID, LocalPlayer, null);
 
         /// <summary>
         /// Find if an effect on the target exists.
@@ -192,7 +223,7 @@ namespace XIVComboExpandedestPlugin.Combos
         /// </summary>
         /// <param name="effectID">Status effect ID.</param>
         /// <returns>A value indicating if the effect exists.</returns>
-        protected static bool TargetHasEffectAny(short effectID) => FindTargetEffectAny(effectID) is not null;
+        protected static bool TargetHasEffectAny(ushort effectID) => FindTargetEffectAny(effectID) is not null;
 
         /// <summary>
         /// Finds an effect on the current target.
@@ -200,7 +231,7 @@ namespace XIVComboExpandedestPlugin.Combos
         /// </summary>
         /// <param name="effectID">Status effect ID.</param>
         /// <returns>Status object or null.</returns>
-        protected static Status? FindTargetEffectAny(short effectID) => FindEffect(effectID, CurrentTarget, null);
+        protected static Status? FindTargetEffectAny(ushort effectID) => FindEffect(effectID, CurrentTarget, null);
 
         /// <summary>
         /// Finds an effect on the given object.
@@ -209,7 +240,7 @@ namespace XIVComboExpandedestPlugin.Combos
         /// <param name="obj">Object to look for effects on.</param>
         /// <param name="sourceID">Source object ID.</param>
         /// <returns>Status object or null.</returns>
-        protected static Status? FindEffect(short effectID, GameObject? obj, uint? sourceID)
+        protected static Status? FindEffect(ushort effectID, GameObject? obj, uint? sourceID)
         {
             if (obj is null)
                 return null;
@@ -238,6 +269,12 @@ namespace XIVComboExpandedestPlugin.Combos
         /// </summary>
         /// <typeparam name="T">Type of job gauge.</typeparam>
         /// <returns>The job gauge.</returns>
-        protected static T GetJobGauge<T>() where T : JobGaugeBase => Service.JobGauges.Get<T>();
+        protected static T GetJobGauge<T>() where T : JobGaugeBase
+        {
+            if (!JobGaugeCache.TryGetValue(typeof(T), out var gauge))
+                gauge = JobGaugeCache[typeof(T)] = Service.JobGauges.Get<T>();
+
+            return (T)gauge;
+        }
     }
 }

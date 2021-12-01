@@ -30,16 +30,17 @@ namespace XIVComboExpandedestPlugin.Combos
 
         public static class Buffs
         {
-            public const short
+            public const ushort
                 Swiftcast = 167,
                 VerfireReady = 1234,
                 VerstoneReady = 1235,
-                Dualcast = 1249;
+                Dualcast = 1249,
+                LostChainspell = 2560;
         }
 
         public static class Debuffs
         {
-            // public const short placeholder = 0;
+            public const ushort Placeholder = 0;
         }
 
         public static class Levels
@@ -68,7 +69,7 @@ namespace XIVComboExpandedestPlugin.Combos
         {
             if (actionID == RDM.Veraero2)
             {
-                if (HasEffect(RDM.Buffs.Swiftcast) || HasEffect(RDM.Buffs.Dualcast))
+                if (HasEffect(RDM.Buffs.Swiftcast) || HasEffect(RDM.Buffs.Dualcast) || HasEffect(RDM.Buffs.LostChainspell))
                     return OriginalHook(RDM.Impact);
 
                 return RDM.Veraero2;
@@ -76,7 +77,7 @@ namespace XIVComboExpandedestPlugin.Combos
 
             if (actionID == RDM.Verthunder2)
             {
-                if (HasEffect(RDM.Buffs.Swiftcast) || HasEffect(RDM.Buffs.Dualcast))
+                if (HasEffect(RDM.Buffs.Swiftcast) || HasEffect(RDM.Buffs.Dualcast) || HasEffect(RDM.Buffs.LostChainspell))
                     return OriginalHook(RDM.Impact);
 
                 return RDM.Verthunder2;
@@ -152,7 +153,13 @@ namespace XIVComboExpandedestPlugin.Combos
 
                 if (IsEnabled(CustomComboPreset.RedMageVerprocComboPlus))
                 {
-                    if ((HasEffect(RDM.Buffs.Dualcast) || HasEffect(RDM.Buffs.Swiftcast)) && level >= RDM.Levels.Veraero)
+                    if ((HasEffect(RDM.Buffs.Swiftcast) || HasEffect(RDM.Buffs.Dualcast) || HasEffect(RDM.Buffs.LostChainspell)) && level >= RDM.Levels.Veraero)
+                        return RDM.Veraero;
+                }
+
+                if (IsEnabled(CustomComboPreset.RedMageVerprocOpenerFeatureStone))
+                {
+                    if (!HasEffect(RDM.Buffs.VerstoneReady) && !HasCondition(ConditionFlag.InCombat) && level >= RDM.Levels.Veraero)
                         return RDM.Veraero;
                 }
 
@@ -172,11 +179,11 @@ namespace XIVComboExpandedestPlugin.Combos
 
                 if (IsEnabled(CustomComboPreset.RedMageVerprocComboPlus))
                 {
-                    if ((HasEffect(RDM.Buffs.Dualcast) || HasEffect(RDM.Buffs.Swiftcast)) && level >= RDM.Levels.Verthunder)
+                    if ((HasEffect(RDM.Buffs.Swiftcast) || HasEffect(RDM.Buffs.Dualcast) || HasEffect(RDM.Buffs.LostChainspell)) && level >= RDM.Levels.Verthunder)
                         return RDM.Verthunder;
                 }
 
-                if (IsEnabled(CustomComboPreset.RedMageVerprocOpenerFeature))
+                if (IsEnabled(CustomComboPreset.RedMageVerprocOpenerFeatureFire))
                 {
                     if (!HasEffect(RDM.Buffs.VerfireReady) && !HasCondition(ConditionFlag.InCombat) && level >= RDM.Levels.Verthunder)
                         return RDM.Verthunder;

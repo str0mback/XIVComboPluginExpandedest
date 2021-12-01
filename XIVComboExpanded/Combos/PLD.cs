@@ -23,14 +23,14 @@ namespace XIVComboExpandedestPlugin.Combos
 
         public static class Buffs
         {
-            public const short
+            public const ushort
                 Requiescat = 1368,
                 SwordOath = 1902;
         }
 
         public static class Debuffs
         {
-            // public const short placeholder = 0;
+            public const ushort Placeholder = 0;
         }
 
         public static class Levels

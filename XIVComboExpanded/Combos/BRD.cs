@@ -20,13 +20,16 @@ namespace XIVComboExpandedestPlugin.Combos
             CausticBite = 7406,
             Stormbite = 7407,
             RefulgentArrow = 7409,
+            Shadowbite = 16494,
             BurstShot = 16495,
-            ApexArrow = 16496;
+            ApexArrow = 16496,
+            Ladonsbite = 25783;
 
         public static class Buffs
         {
             public const ushort
-                StraightShotReady = 122;
+                StraightShotReady = 122,
+                ShadowbiteReady = 3002;
         }
 
         public static class Debuffs
@@ -74,11 +77,11 @@ namespace XIVComboExpandedestPlugin.Combos
             if (actionID == BRD.HeavyShot || actionID == BRD.BurstShot)
             {
                 var gauge = GetJobGauge<BRDGauge>();
-                if (gauge.SoulVoice == 100 && IsEnabled(CustomComboPreset.BardApexFeature))
-                    return BRD.ApexArrow;
+                if ((gauge.SoulVoice == 100 && IsEnabled(CustomComboPreset.BardApexFeature)) || OriginalHook(BRD.ApexArrow) != BRD.ApexArrow)
+                    return OriginalHook(BRD.ApexArrow);
 
                 if (HasEffect(BRD.Buffs.StraightShotReady))
-                    return OriginalHook(BRD.RefulgentArrow);
+                    return OriginalHook(BRD.StraightShot);
             }
 
             return actionID;
@@ -147,11 +150,27 @@ namespace XIVComboExpandedestPlugin.Combos
 
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
         {
-            if (actionID == BRD.QuickNock)
+            if (actionID == BRD.QuickNock || actionID == BRD.Ladonsbite)
             {
                 var gauge = GetJobGauge<BRDGauge>();
-                if (gauge.SoulVoice == 100)
-                    return BRD.ApexArrow;
+                if (gauge.SoulVoice == 100 || OriginalHook(BRD.ApexArrow) != BRD.ApexArrow)
+                    return OriginalHook(BRD.ApexArrow);
+            }
+
+            return actionID;
+        }
+    }
+
+    internal class BardShadowbiteFeature : CustomCombo
+    {
+        protected override CustomComboPreset Preset => CustomComboPreset.BardShadowbiteFeature;
+
+        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        {
+            if (actionID == BRD.QuickNock || actionID == BRD.Ladonsbite)
+            {
+                if (HasEffect(BRD.Buffs.ShadowbiteReady))
+                    return OriginalHook(BRD.Shadowbite);
             }
 
             return actionID;

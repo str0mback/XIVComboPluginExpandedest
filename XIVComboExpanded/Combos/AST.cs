@@ -19,11 +19,14 @@ namespace XIVComboExpandedestPlugin.Combos
             Spire = 4406,
             MinorArcana = 7443,
             SleeveDraw = 7448,
-            Play = 17055;
+            Play = 17055,
+            CrownPlay = 25869;
 
         public static class Buffs
         {
-            public const ushort Placeholder = 0;
+            public const ushort
+                LordOfCrownsDrawn = 2054,
+                LadyOfCrownsDrawn = 2055;
         }
 
         public static class Debuffs
@@ -35,8 +38,7 @@ namespace XIVComboExpandedestPlugin.Combos
         {
             public const byte
                 Benefic2 = 26,
-                MinorArcana = 50,
-                SleeveDraw = 70;
+                MinorArcana = 70;
         }
     }
 
@@ -57,17 +59,16 @@ namespace XIVComboExpandedestPlugin.Combos
         }
     }
 
-    internal class AstrologianSleeveDrawFeature : CustomCombo
+    internal class AstrologianMinorArcanaPlayFeature : CustomCombo
     {
-        protected override CustomComboPreset Preset => CustomComboPreset.AstrologianSleeveDrawFeature;
+        protected override CustomComboPreset Preset => CustomComboPreset.AstrologianMinorArcanaPlayFeature;
 
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
         {
             if (actionID == AST.MinorArcana)
             {
-                var gauge = GetJobGauge<ASTGauge>();
-                if (gauge.DrawnCard == CardType.NONE && level >= AST.Levels.SleeveDraw)
-                    return AST.SleeveDraw;
+                if (level >= AST.Levels.MinorArcana && (HasEffect(AST.Buffs.LordOfCrownsDrawn) || HasEffect(AST.Buffs.LadyOfCrownsDrawn)))
+                    return AST.CrownPlay;
             }
 
             return actionID;

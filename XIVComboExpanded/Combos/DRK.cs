@@ -18,7 +18,8 @@ namespace XIVComboExpandedestPlugin.Combos
             EdgeOfDarkness = 16467,
             StalwartSoul = 16468,
             FloodOfShadow = 16469,
-            EdgeOfShadow = 16470;
+            EdgeOfShadow = 16470,
+            Shadowbringer = 25757;
 
         public static class Buffs
         {
@@ -55,11 +56,6 @@ namespace XIVComboExpandedestPlugin.Combos
         {
             if (actionID == DRK.Souleater)
             {
-                if (IsEnabled(CustomComboPreset.DeliriumFeature))
-                {
-                    if (level >= DRK.Levels.Bloodpiller && level >= DRK.Levels.Delirium && HasEffect(DRK.Buffs.Delirium))
-                        return DRK.Bloodspiller;
-                }
 
                 if (comboTime > 0)
                 {
@@ -89,12 +85,6 @@ namespace XIVComboExpandedestPlugin.Combos
                 if (IsEnabled(CustomComboPreset.DRKOvercapFeature))
                 {
                     if (gauge.Blood >= 90 && HasEffect(DRK.Buffs.BloodWeapon))
-                        return DRK.Quietus;
-                }
-
-                if (IsEnabled(CustomComboPreset.DeliriumFeature))
-                {
-                    if (level >= DRK.Levels.Quietus && level >= DRK.Levels.Delirium && HasEffect(DRK.Buffs.Delirium))
                         return DRK.Quietus;
                 }
 

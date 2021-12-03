@@ -1,3 +1,5 @@
+using Dalamud.Game.ClientState.Statuses;
+
 namespace XIVComboExpandedestPlugin.Combos
 {
     internal static class PLD
@@ -19,7 +21,10 @@ namespace XIVComboExpandedestPlugin.Combos
             Prominence = 16457,
             HolyCircle = 16458,
             Confiteor = 16459,
-            Atonement = 16460;
+            Atonement = 16460,
+            BladeOfFaith = 25748,
+            BladeOfTruth = 25749,
+            BladeOfValor = 25750;
 
         public static class Buffs
         {
@@ -55,18 +60,6 @@ namespace XIVComboExpandedestPlugin.Combos
         {
             if (actionID == PLD.GoringBlade)
             {
-                if (IsEnabled(CustomComboPreset.PaladinRequiescatFeature))
-                {
-                    // Replace with Holy Spirit when Requiescat is up
-                    if (HasEffect(PLD.Buffs.Requiescat))
-                    {
-                        if (IsEnabled(CustomComboPreset.PaladinConfiteorFeature) && level >= PLD.Levels.Confiteor && LocalPlayer.CurrentMp < 4000)
-                            return PLD.Confiteor;
-
-                        return PLD.HolySpirit;
-                    }
-                }
-
                 if (comboTime > 0)
                 {
                     if (lastComboMove == PLD.FastBlade && level >= PLD.Levels.RiotBlade)
@@ -91,18 +84,6 @@ namespace XIVComboExpandedestPlugin.Combos
         {
             if (actionID == PLD.RoyalAuthority || actionID == PLD.RageOfHalone)
             {
-                if (IsEnabled(CustomComboPreset.PaladinRequiescatFeature))
-                {
-                    // Replace with Holy Spirit when Requiescat is up
-                    if (HasEffect(PLD.Buffs.Requiescat))
-                    {
-                        // Replace with Confiteor when under 4000 MP
-                        if (IsEnabled(CustomComboPreset.PaladinConfiteorFeature) && level >= PLD.Levels.Confiteor && LocalPlayer.CurrentMp < 4000)
-                            return PLD.Confiteor;
-                        return PLD.HolySpirit;
-                    }
-                }
-
                 if (comboTime > 0)
                 {
                     if (lastComboMove == PLD.FastBlade && level >= PLD.Levels.RiotBlade)
@@ -133,17 +114,6 @@ namespace XIVComboExpandedestPlugin.Combos
         {
             if (actionID == PLD.Prominence)
             {
-                if (IsEnabled(CustomComboPreset.PaladinRequiescatFeature))
-                {
-                    if (HasEffect(PLD.Buffs.Requiescat) && level >= PLD.Levels.HolyCircle)
-                    {
-                        if (IsEnabled(CustomComboPreset.PaladinConfiteorFeature) && level >= PLD.Levels.Confiteor && LocalPlayer.CurrentMp < 4000)
-                            return PLD.Confiteor;
-
-                        return PLD.HolyCircle;
-                    }
-                }
-
                 if (comboTime > 0)
                 {
                     if (lastComboMove == PLD.TotalEclipse && level >= PLD.Levels.Prominence)
@@ -163,20 +133,22 @@ namespace XIVComboExpandedestPlugin.Combos
 
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
         {
-            if (actionID == PLD.HolySpirit)
+            if (actionID == PLD.HolySpirit || actionID == PLD.HolyCircle)
             {
-                if (HasEffect(PLD.Buffs.Requiescat) && level >= PLD.Levels.Confiteor && LocalPlayer?.CurrentMp < 4000)
-                    return PLD.Confiteor;
+                if (OriginalHook(PLD.Confiteor) != PLD.Confiteor)
+                    return OriginalHook(PLD.Confiteor);
 
-                return PLD.HolySpirit;
-            }
+                Status? requiescat = FindEffect(PLD.Buffs.Requiescat);
 
-            if (actionID == PLD.HolyCircle)
-            {
-                if (HasEffect(PLD.Buffs.Requiescat) && level >= PLD.Levels.Confiteor && LocalPlayer?.CurrentMp < 4000)
-                    return PLD.Confiteor;
+                if (requiescat != null)
+                {
+                    if (requiescat.StackCount <= 1)
+                    {
+                        return OriginalHook(PLD.Confiteor);
+                    }
+                }
 
-                return PLD.HolyCircle;
+                return actionID;
             }
 
             return actionID;
@@ -191,8 +163,8 @@ namespace XIVComboExpandedestPlugin.Combos
         {
             if (actionID == PLD.Requiescat)
             {
-                if (HasEffect(PLD.Buffs.Requiescat) && level >= PLD.Levels.Confiteor)
-                    return PLD.Confiteor;
+                if ((HasEffect(PLD.Buffs.Requiescat) && level >= PLD.Levels.Confiteor) || OriginalHook(PLD.Confiteor) != PLD.Confiteor)
+                    return OriginalHook(PLD.Confiteor);
 
                 return PLD.Requiescat;
             }

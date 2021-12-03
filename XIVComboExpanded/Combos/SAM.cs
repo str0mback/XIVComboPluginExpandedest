@@ -17,13 +17,19 @@ namespace XIVComboExpandedestPlugin.Combos
             Mangetsu = 7484,
             Fuga = 7483,
             Oka = 7485,
+            Kyuten = 7491,
             MeikyoShisui = 7499,
             Seigan = 7501,
             ThirdEye = 7498,
             Iaijutsu = 7867,
             TsubameGaeshi = 16483,
             KaeshiHiganbana = 16484,
-            Shoha = 16487;
+            Shoha = 16487,
+            Shoha2 = 25779,
+            Ikishoten = 16482,
+            Fuko = 25780,
+            OgiNamikiri = 25781,
+            KaeshiNamikiri = 25782;
 
         public static class Buffs
         {
@@ -31,7 +37,8 @@ namespace XIVComboExpandedestPlugin.Combos
                 MeikyoShisui = 1233,
                 EyesOpen = 1252,
                 Jinpu = 1298,
-                Shifu = 1299;
+                Shifu = 1299,
+                OgiNamikiriReady = 2959;
         }
 
         public static class Debuffs
@@ -50,7 +57,10 @@ namespace XIVComboExpandedestPlugin.Combos
                 Oka = 45,
                 Yukikaze = 50,
                 TsubameGaeshi = 76,
-                Shoha = 80;
+                Shoha = 80,
+                Shoha2 = 82,
+                Hyosetsu = 86,
+                OgiNamikiri = 90;
         }
     }
 
@@ -140,10 +150,10 @@ namespace XIVComboExpandedestPlugin.Combos
                 if (HasEffect(SAM.Buffs.MeikyoShisui))
                     return SAM.Mangetsu;
 
-                if (comboTime > 0 && lastComboMove == SAM.Fuga && level >= SAM.Levels.Mangetsu)
+                if (comboTime > 0 && (lastComboMove == SAM.Fuga || lastComboMove == SAM.Fuko) && level >= SAM.Levels.Mangetsu)
                     return SAM.Mangetsu;
 
-                return SAM.Fuga;
+                return OriginalHook(SAM.Fuga);
             }
 
             return actionID;
@@ -161,52 +171,10 @@ namespace XIVComboExpandedestPlugin.Combos
                 if (HasEffect(SAM.Buffs.MeikyoShisui))
                     return SAM.Oka;
 
-                if (comboTime > 0 && lastComboMove == SAM.Fuga && level >= SAM.Levels.Oka)
+                if (comboTime > 0 && (lastComboMove == SAM.Fuga || lastComboMove == SAM.Fuko) && level >= SAM.Levels.Oka)
                     return SAM.Oka;
 
-                return SAM.Fuga;
-            }
-
-            return actionID;
-        }
-    }
-
-    internal class SamuraiThirdEyeFeature : CustomCombo
-    {
-        protected override CustomComboPreset Preset => CustomComboPreset.SamuraiThirdEyeFeature;
-
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
-        {
-            if (actionID == SAM.Seigan)
-            {
-                if (HasEffect(SAM.Buffs.EyesOpen))
-                    return SAM.Seigan;
-
-                return SAM.ThirdEye;
-            }
-
-            return actionID;
-        }
-    }
-
-    internal class SamuraiJinpuShifuFeature : CustomCombo
-    {
-        protected override CustomComboPreset Preset => CustomComboPreset.SamuraiJinpuShifuFeature;
-
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
-        {
-            if (actionID == SAM.MeikyoShisui)
-            {
-                if (HasEffect(SAM.Buffs.MeikyoShisui) && IsEnabled(CustomComboPreset.SamuraiJinpuShifuFeature))
-                {
-                    if (!HasEffect(SAM.Buffs.Jinpu))
-                        return SAM.Jinpu;
-
-                    if (!HasEffect(SAM.Buffs.Shifu))
-                        return SAM.Shifu;
-
-                }
-                return SAM.MeikyoShisui;
+                return OriginalHook(SAM.Fuga);
             }
 
             return actionID;
@@ -277,6 +245,47 @@ namespace XIVComboExpandedestPlugin.Combos
                 if (level >= SAM.Levels.TsubameGaeshi && gauge.Sen == Sen.NONE)
                     return OriginalHook(SAM.TsubameGaeshi);
                 return OriginalHook(SAM.Iaijutsu);
+            }
+
+            return actionID;
+        }
+    }
+
+    internal class SamuraiShoha2Feature: CustomCombo
+    {
+        protected override CustomComboPreset Preset => CustomComboPreset.SamuraiShoha2Feature;
+
+        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        {
+            if (actionID == SAM.Kyuten)
+            {
+                var gauge = GetJobGauge<SAMGauge>();
+                if (level >= SAM.Levels.Shoha2 && gauge.MeditationStacks >= 3)
+                    return SAM.Shoha2;
+            }
+
+            return actionID;
+        }
+    }
+
+    internal class SamuraiIkishotenNamikiriFeature : CustomCombo
+    {
+        protected override CustomComboPreset Preset => CustomComboPreset.SamuraiIkishotenNamikiriFeature;
+
+        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        {
+            if (actionID == SAM.Ikishoten)
+            {
+                if (level >= SAM.Levels.OgiNamikiri)
+                {
+                    if (HasEffect(SAM.Buffs.OgiNamikiriReady))
+                        return SAM.OgiNamikiri;
+
+                    if (OriginalHook(SAM.OgiNamikiri) == SAM.KaeshiNamikiri)
+                        return SAM.KaeshiNamikiri;
+                }
+
+                return SAM.Ikishoten;
             }
 
             return actionID;

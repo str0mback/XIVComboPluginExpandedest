@@ -9,30 +9,37 @@ namespace XIVComboExpandedestPlugin.Combos
         public const byte JobID = 22;
 
         public const uint
+            // Single Target
+            TrueThrust = 75,
+            VorpalThrust = 78,
+            Disembowel = 87,
+            FullThrust = 84,
+            ChaosThrust = 88,
+            HeavensThrust = 25771,
+            ChaoticSpring = 25772,
+            WheelingThrust = 3556,
+            FangAndClaw = 3554,
+            RaidenThrust = 16479,
+            // AoE
+            DoomSpike = 86,
+            SonicThrust = 7397,
+            CoerthanTorment = 16477,
+            DraconianFury = 25770,
+            // Combined
+            // Jumps
             Jump = 92,
             HighJump = 16478,
             MirageDive = 7399,
-            BloodOfTheDragon = 3553,
+            // Dragon
             Stardiver = 16480,
-            CoerthanTorment = 16477,
-            DoomSpike = 86,
-            SonicThrust = 7397,
-            ChaosThrust = 88,
-            RaidenThrust = 16479,
-            TrueThrust = 75,
-            Disembowel = 87,
-            FangAndClaw = 3554,
-            WheelingThrust = 3556,
-            FullThrust = 84,
-            VorpalThrust = 78;
+            WyrmwindThrust = 25773;
 
         public static class Buffs
         {
             public const ushort
                 SharperFangAndClaw = 802,
                 EnhancedWheelingThrust = 803,
-                DiveReady = 1243,
-                RaidenThrustReady = 1863;
+                DiveReady = 1243;
         }
 
         public static class Debuffs
@@ -47,9 +54,12 @@ namespace XIVComboExpandedestPlugin.Combos
                 Disembowel = 18,
                 FullThrust = 26,
                 ChaosThrust = 50,
+                HeavensThrust = 86,
+                ChaoticSpring = 86,
                 FangAndClaw = 56,
                 WheelingThrust = 58,
                 SonicThrust = 62,
+                MirageDive = 68,
                 CoerthanTorment = 72,
                 HighJump = 74,
                 RaidenThrust = 76,
@@ -75,26 +85,6 @@ namespace XIVComboExpandedestPlugin.Combos
         }
     }
 
-    internal class DragoonBOTDFeature : CustomCombo
-    {
-        protected override CustomComboPreset Preset => CustomComboPreset.DragoonBOTDFeature;
-
-        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
-        {
-            if (actionID == DRG.BloodOfTheDragon)
-            {
-                if (level >= DRG.Levels.Stardiver)
-                {
-                    var gauge = GetJobGauge<DRGGauge>();
-                    if (gauge.BOTDState == BOTDState.LOTD)
-                        return DRG.Stardiver;
-                }
-            }
-
-            return actionID;
-        }
-    }
-
     internal class DragoonCoerthanTormentCombo : CustomCombo
     {
         protected override CustomComboPreset Preset => CustomComboPreset.DragoonCoerthanTormentCombo;
@@ -105,14 +95,14 @@ namespace XIVComboExpandedestPlugin.Combos
             {
                 if (comboTime > 0)
                 {
-                    if (lastComboMove == DRG.DoomSpike && level >= DRG.Levels.SonicThrust)
+                    if ((lastComboMove == DRG.DoomSpike || lastComboMove == DRG.DraconianFury) && level >= DRG.Levels.SonicThrust)
                         return DRG.SonicThrust;
 
                     if (lastComboMove == DRG.SonicThrust && level >= DRG.Levels.CoerthanTorment)
                         return DRG.CoerthanTorment;
                 }
 
-                return DRG.DoomSpike;
+                return OriginalHook(DRG.DoomSpike);
             }
 
             return actionID;
@@ -133,7 +123,7 @@ namespace XIVComboExpandedestPlugin.Combos
                         return DRG.Disembowel;
 
                     if (lastComboMove == DRG.Disembowel && level >= DRG.Levels.ChaosThrust)
-                        return DRG.ChaosThrust;
+                        return OriginalHook(DRG.ChaosThrust);
                 }
 
                 if (HasEffect(DRG.Buffs.SharperFangAndClaw) && level >= DRG.Levels.FangAndClaw)
@@ -163,7 +153,7 @@ namespace XIVComboExpandedestPlugin.Combos
                         return DRG.VorpalThrust;
 
                     if (lastComboMove == DRG.VorpalThrust && level >= DRG.Levels.FullThrust)
-                        return DRG.FullThrust;
+                        return OriginalHook(DRG.FullThrust);
                 }
 
                 if (HasEffect(DRG.Buffs.SharperFangAndClaw) && level >= DRG.Levels.FangAndClaw)

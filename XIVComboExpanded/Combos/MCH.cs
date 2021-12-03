@@ -32,7 +32,8 @@ namespace XIVComboExpandedestPlugin.Combos
             HeatBlast = 7410,
             HotShot = 2872,
             Drill = 16498,
-            AirAnchor = 16500;
+            AirAnchor = 16500,
+            Chainsaw = 25788;
 
         public static class Buffs
         {
@@ -61,7 +62,8 @@ namespace XIVComboExpandedestPlugin.Combos
                 HeatedCleanShot = 64,
                 ChargedActionMastery = 74,
                 AirAnchor = 76,
-                QueenOverdrive = 80;
+                QueenOverdrive = 80,
+                Chainsaw = 90;
         }
     }
 
@@ -151,6 +153,8 @@ namespace XIVComboExpandedestPlugin.Combos
                 var gauge = GetJobGauge<MCHGauge>();
                 if (gauge.IsOverheated && level >= MCH.Levels.AutoCrossbow)
                     return MCH.AutoCrossbow;
+
+                return OriginalHook(MCH.SpreadShot);
             }
 
             return actionID;
@@ -177,12 +181,31 @@ namespace XIVComboExpandedestPlugin.Combos
 
     internal class MachinistDrillAirAnchorFeature : CustomCombo
     {
-        protected override CustomComboPreset Preset => CustomComboPreset.MachinistDrillAirAnchorFeature;
+        protected override CustomComboPreset Preset => CustomComboPreset.MachinistHotShotDrillChainsawFeature;
 
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
         {
             if (actionID == MCH.Drill || actionID == MCH.HotShot || actionID == MCH.AirAnchor)
             {
+                if (level >= MCH.Levels.Chainsaw)
+                {
+                    var drill = (MCH.Drill, GetCooldown(MCH.Drill));
+                    var anchor = (MCH.AirAnchor, GetCooldown(MCH.AirAnchor));
+                    var chainsaw = (MCH.Chainsaw, GetCooldown(MCH.Chainsaw));
+
+                    // Prioritize whichever is slotted action.
+                    (actionID, _) = actionID switch
+                    {
+                        // We'll modify this later based on the opener/rotation
+                        MCH.Drill => CalcBestAction(drill, anchor, chainsaw),
+                        MCH.AirAnchor => CalcBestAction(anchor, chainsaw, drill),
+                        MCH.Chainsaw => CalcBestAction(chainsaw, anchor, drill),
+                        _ => throw new NotImplementedException(),
+                    };
+
+                    return actionID;
+                }
+
                 if (level >= MCH.Levels.AirAnchor)
                 {
                     var drill = (MCH.Drill, GetCooldown(MCH.Drill));

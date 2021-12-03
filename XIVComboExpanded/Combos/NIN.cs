@@ -1,3 +1,5 @@
+using System;
+
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.JobGauge.Enums;
 
@@ -12,7 +14,7 @@ namespace XIVComboExpandedestPlugin.Combos
             SpinningEdge = 2240,
             GustSlash = 2242,
             Hide = 2245,
-            Assassinate = 2246,
+            Assassinate = 8814,
             Mug = 2248,
             DeathBlossom = 2254,
             AeolianEdge = 2255,
@@ -26,7 +28,12 @@ namespace XIVComboExpandedestPlugin.Combos
             TenChiJin = 7403,
             HakkeMujinsatsu = 16488,
             Meisui = 16489,
-            Jin = 18807;
+            Jin = 18807,
+            Bunshin = 16493,
+            Huraijin = 25876,
+            PhantomKamaitachi = 25774,
+            ForkedRaiju = 25777,
+            FleetingRaiju = 25778;
 
         public static class Buffs
         {
@@ -35,7 +42,9 @@ namespace XIVComboExpandedestPlugin.Combos
                 Kassatsu = 497,
                 Suiton = 507,
                 Hidden = 614,
-                AssassinateReady = 1955;
+                Bunshin = 1954,
+                ForkedRaijuReady = 2690,
+                FleetingRaijuReady = 2691;
         }
 
         public static class Debuffs
@@ -48,10 +57,16 @@ namespace XIVComboExpandedestPlugin.Combos
             public const byte
                 GustSlash = 4,
                 AeolianEdge = 26,
+                Assassinate = 40,
                 HakkeMujinsatsu = 52,
                 ArmorCrush = 54,
+                DreamWithinADream = 56,
+                Huraijin = 60,
                 Meisui = 72,
-                EnhancedKassatsu = 76;
+                EnhancedKassatsu = 76,
+                Bunshin = 80,
+                PhantomKamaitachi = 82,
+                ForkedRaiju = 90;
         }
     }
 
@@ -145,8 +160,23 @@ namespace XIVComboExpandedestPlugin.Combos
         {
             if (actionID == NIN.DreamWithinADream)
             {
-                if (HasEffect(NIN.Buffs.AssassinateReady))
+                if (level >= NIN.Levels.DreamWithinADream)
+                {
+                    var dwad = (NIN.DreamWithinADream, GetCooldown(NIN.DreamWithinADream));
+                    var ass = (NIN.Assassinate, GetCooldown(NIN.Assassinate));
+
+                    // Prioritize whichever is slotted action.
+                    (actionID, _) = actionID switch
+                    {
+                        NIN.DreamWithinADream => CalcBestAction(dwad, ass),
+                        NIN.Assassinate => CalcBestAction(ass, dwad),
+                        _ => throw new NotImplementedException(),
+                    };
+                }
+                else
+                {
                     return NIN.Assassinate;
+                }
             }
 
             return actionID;
@@ -231,6 +261,45 @@ namespace XIVComboExpandedestPlugin.Combos
                     return NIN.Meisui;
 
                 return NIN.TenChiJin;
+            }
+
+            return actionID;
+        }
+    }
+
+    internal class NinjaBunshinKamaitachiFeature : CustomCombo
+    {
+        protected override CustomComboPreset Preset => CustomComboPreset.NinjaBunshinKamaitachiFeature;
+
+        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        {
+            if (actionID == NIN.Bunshin)
+            {
+                if (level >= NIN.Levels.PhantomKamaitachi && HasEffect(NIN.Buffs.Bunshin))
+                    return NIN.PhantomKamaitachi;
+
+                return NIN.Bunshin;
+            }
+
+            return actionID;
+        }
+    }
+
+    internal class NinjaHuraijinRaijuFeature : CustomCombo
+    {
+        protected override CustomComboPreset Preset => CustomComboPreset.NinjaHuraijinRaijuFeature;
+
+        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        {
+            if (actionID == NIN.Huraijin)
+            {
+                if (level >= NIN.Levels.ForkedRaiju && HasEffect(NIN.Buffs.ForkedRaijuReady))
+                    return NIN.ForkedRaiju;
+
+                if (level >= NIN.Levels.ForkedRaiju && HasEffect(NIN.Buffs.FleetingRaijuReady))
+                    return NIN.FleetingRaiju;
+
+                return NIN.Huraijin;
             }
 
             return actionID;

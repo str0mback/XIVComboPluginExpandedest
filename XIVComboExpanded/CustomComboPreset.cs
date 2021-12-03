@@ -9,7 +9,7 @@ namespace XIVComboExpandedestPlugin
     /// </summary>
     public enum CustomComboPreset
     {
-        // Last enum used: 106
+        // Last enum used: 118
         // ====================================================================================
         #region ALL CLASSES
 
@@ -26,8 +26,8 @@ namespace XIVComboExpandedestPlugin
         AstrologianCardsOnDrawFeature = 27,
 
         [OrderedEnum]
-        [CustomComboInfo("Minor Arcana to Sleeve Draw", "Changes Minor Arcana to Sleeve Draw when a card is not drawn.", AST.JobID, AST.MinorArcana)]
-        AstrologianSleeveDrawFeature = 75,
+        [CustomComboInfo("Minor Arcana to Crown Play", "Changes Minor Arcana to Crown Play when a card is not drawn.", AST.JobID, AST.MinorArcana)]
+        AstrologianMinorArcanaPlayFeature = 75,
 
         [OrderedEnum]
         [CustomComboInfo("Benefic 2 to Benefic Level Sync", "Changes Benefic 2 to Benefic when below level 26 in synced content.", AST.JobID, AST.Benefic2)]
@@ -38,8 +38,12 @@ namespace XIVComboExpandedestPlugin
         #region BLACK MAGE
 
         [OrderedEnum]
-        [CustomComboInfo("Enochian Stance Switcher", "Change Enochian to Fire 4 or Blizzard 4 depending on stance.", BLM.JobID, BLM.Enochian)]
+        [CustomComboInfo("Blizzard 4/Fire 4 Switcher", "Change Fire 4 or Blizzard 4 to whichever action you can currently use.", BLM.JobID, BLM.Blizzard4, BLM.Fire4)]
         BlackEnochianFeature = 25,
+
+        [OrderedEnum]
+        [CustomComboInfo("Freeze/Flare Switcher", "Change Freeze or Flare to whichever action you can currently use.", BLM.JobID, BLM.Freeze, BLM.Flare)]
+        BlackFreezeFlareFeature = 107,
 
         [OrderedEnum]
         [CustomComboInfo("Umbral Soul/Transpose Switcher", "Change Transpose into Umbral Soul when Umbral Soul is usable.", BLM.JobID, BLM.Transpose)]
@@ -56,10 +60,6 @@ namespace XIVComboExpandedestPlugin
         [OrderedEnum]
         [CustomComboInfo("Blizzard 1/3 Feature", "Blizzard 1 becomes Blizzard 3 when out of Umbral Ice.", BLM.JobID, BLM.Blizzard)]
         BlackBlizzardFeature = 88,
-
-        [OrderedEnum]
-        [CustomComboInfo("Freeze Feature", "Freeze becomes Blizzard 2 when synced.", BLM.JobID, BLM.Freeze)]
-        BlackFreezeFeature = 106,
 
         [OrderedEnum]
         [CustomComboInfo("Scathe/Xenoglossy Feature", "Scathe becomes Xenoglossy when available.", BLM.JobID, BLM.Scathe)]
@@ -82,8 +82,12 @@ namespace XIVComboExpandedestPlugin
         BardIronJawsFeature = 84,
 
         [OrderedEnum]
-        [CustomComboInfo("Burst Shot/Quick Nock into Apex Arrow", "Replaces Burst Shot and Quick Nock with Apex Arrow when gauge is full.", BRD.JobID, BRD.BurstShot, BRD.QuickNock)]
+        [CustomComboInfo("Burst Shot/Quick Nock/Ladonsbite into Apex Arrow", "Replaces Burst Shot and Quick Nock with Apex Arrow when gauge is full.", BRD.JobID, BRD.BurstShot, BRD.QuickNock, BRD.Ladonsbite)]
         BardApexFeature = 85,
+
+        [OrderedEnum]
+        [CustomComboInfo("Quick Nock/Ladonsbite into Shadowbite", "Replaces Quick Nock/Ladonsbite with Shadowbite when it is ready.", BRD.JobID, BRD.QuickNock, BRD.Ladonsbite)]
+        BardShadowbiteFeature = 108,
 
         #endregion
         // ====================================================================================
@@ -112,6 +116,10 @@ namespace XIVComboExpandedestPlugin
         DancerAoeMultibutton = 50,
 
         [OrderedEnum]
+        [CustomComboInfo("Devilment Feature", "Change Devilment into Starfall Dance after use.", DNC.JobID, DNC.Devilment)]
+        DancerDevilmentFeature = 109,
+
+        [OrderedEnum]
         [ConflictingCombos(DancerDanceStepCombo)]
         [CustomComboInfo(
             "Dance Step Feature",
@@ -130,10 +138,6 @@ namespace XIVComboExpandedestPlugin
         [OrderedEnum]
         [CustomComboInfo("Jump + Mirage Dive", "Replace (High) Jump with Mirage Dive when Dive Ready.", DRG.JobID, DRG.Jump, DRG.HighJump)]
         DragoonJumpFeature = 44,
-
-        [OrderedEnum]
-        [CustomComboInfo("BOTD Into Stardiver", "Replace Blood of the Dragon with Stardiver when in Life of the Dragon.", DRG.JobID, DRG.BloodOfTheDragon)]
-        DragoonBOTDFeature = 46,
 
         [OrderedEnum]
         [CustomComboInfo("Coerthan Torment Combo", "Replace Coerthan Torment with its combo chain.", DRG.JobID, DRG.CoerthanTorment)]
@@ -160,10 +164,6 @@ namespace XIVComboExpandedestPlugin
         DarkStalwartSoulCombo = 4,
 
         [OrderedEnum]
-        [CustomComboInfo("Delirium Feature", "Replace Souleater and Stalwart Soul with Bloodspiller and Quietus when Delirium is active.", DRK.JobID, DRK.Souleater, DRK.StalwartSoul)]
-        DeliriumFeature = 57,
-
-        [OrderedEnum]
         [CustomComboInfo("Dark Knight Gauge Overcap Feature", "Replace AoE combo with gauge spender if you are about to overcap.", DRK.JobID, DRK.StalwartSoul)]
         DRKOvercapFeature = 71,
 
@@ -176,12 +176,12 @@ namespace XIVComboExpandedestPlugin
         GunbreakerSolidBarrelCombo = 20,
 
         [OrderedEnum]
-        [CustomComboInfo("Wicked Talon Combo", "Replace Wicked Talon with its combo chain.", GNB.JobID, GNB.WickedTalon)]
-        GunbreakerGnashingFangCombo = 21,
+        [CustomComboInfo("Gnashing Fang Continuation", "Replace Gnashing Fang with Continuation when appropriate.", GNB.JobID, GNB.GnashingFang)]
+        GunbreakerGnashingFangContinuation = 21,
 
         [OrderedEnum]
-        [CustomComboInfo("Wicked Talon Continuation", "In addition to the Wicked Talon combo chain, put Continuation moves on Wicked Talon when appropriate.", GNB.JobID, GNB.WickedTalon)]
-        GunbreakerGnashingFangCont = 52,
+        [CustomComboInfo("Burst Strike Continuation", "Replace Burst Strike with Continuation when appropriate.", GNB.JobID, GNB.BurstStrike)]
+        GunbreakerBurstStrikeCont = 52,
 
         [OrderedEnum]
         [SecretCustomCombo]
@@ -231,8 +231,8 @@ namespace XIVComboExpandedestPlugin
 
         [OrderedEnum]
         [SecretCustomCombo]
-        [CustomComboInfo("Drill / Air Anchor (Hot Shot) Feature", "Replace Drill and Air Anchor (Hot Shot) with one or the other depending on which is on cooldown.", MCH.JobID, MCH.Drill, MCH.HotShot, MCH.AirAnchor)]
-        MachinistDrillAirAnchorFeature = 105,
+        [CustomComboInfo("Drill / Air Anchor (Hot Shot) Feature", "Replace Drill and Air Anchor (Hot Shot) with one or the other (or Chainsaw) depending on which is on cooldown.", MCH.JobID, MCH.Drill, MCH.HotShot, MCH.AirAnchor)]
+        MachinistHotShotDrillChainsawFeature = 105,
 
         #endregion
         // ====================================================================================
@@ -240,11 +240,15 @@ namespace XIVComboExpandedestPlugin
 
         [OrderedEnum]
         [CustomComboInfo("Monk AoE Combo", "Replaces Rockbreaker with the AoE combo chain, or Rockbreaker when Perfect Balance is active.", MNK.JobID, MNK.Rockbreaker)]
-        MnkAoECombo = 54,
+        MonkAoECombo = 54,
 
         [OrderedEnum]
         [CustomComboInfo("Monk Bootshine Feature", "Replaces Dragon Kick with Bootshine if both a form and Leaden Fist are up.", MNK.JobID, MNK.DragonKick)]
         MnkBootshineFeature = 65,
+
+        [OrderedEnum]
+        [CustomComboInfo("Howling Fist / Meditation Feature", "Howling Fist with Meditation when the Fifth Chakra is not open.", MNK.JobID, MNK.HowlingFist)]
+        MonkHowlingFistMeditationFeature = 110,
 
         #endregion
         // ====================================================================================
@@ -263,7 +267,7 @@ namespace XIVComboExpandedestPlugin
         NinjaHakkeMujinsatsuCombo = 19,
 
         [OrderedEnum]
-        [CustomComboInfo("Dream to Assassinate", "Replace Dream Within a Dream with Assassinate when Assassinate Ready.", NIN.JobID, NIN.DreamWithinADream)]
+        [CustomComboInfo("Dream to Assassinate", "Cycle between Dream within a Dream and Assassinate on the Dream within a Dream action, based on their cooldowns.", NIN.JobID, NIN.DreamWithinADream)]
         NinjaAssassinateFeature = 45,
 
         [OrderedEnum]
@@ -292,6 +296,15 @@ namespace XIVComboExpandedestPlugin
         [CustomComboInfo("GCDs to Ninjutsu Feature", "Every GCD combo becomes Ninjutsu while Mudras are being used.", NIN.JobID, NIN.AeolianEdge, NIN.ArmorCrush, NIN.HakkeMujinsatsu)]
         NinjaGCDNinjutsuFeature = 98,
 
+        [OrderedEnum]
+        [CustomComboInfo("Bunshin / Kamaitachi Feature", "Replaces Bunshin with Phantom Kamaitachi after usage.", NIN.JobID, NIN.Bunshin)]
+        NinjaBunshinKamaitachiFeature = 111,
+
+        [OrderedEnum]
+        [CustomComboInfo("Huraijin / Raiju Feature", "Replaces Huraijin with Forked and Fleeting Raiju when available.", NIN.JobID, NIN.Huraijin)]
+        NinjaHuraijinRaijuFeature = 112,
+
+
         #endregion
         // ====================================================================================
         #region PALADIN
@@ -313,17 +326,29 @@ namespace XIVComboExpandedestPlugin
         PaladinProminenceCombo = 7,
 
         [OrderedEnum]
-        [CustomComboInfo("Requiescat Confiteor", "Replace Requiescat with Confiter while under the effect of Requiescat.", PLD.JobID, PLD.Requiescat)]
+        [CustomComboInfo("Requiescat Confiteor", "Replace Requiescat with Confiter while under the effect of Requiescat. Includes Confiteor combo.", PLD.JobID, PLD.Requiescat)]
         PaladinRequiescatCombo = 55,
 
         [OrderedEnum]
-        [CustomComboInfo("Requiescat Feature", "Replace Royal Authority/Goring Blade combo with Holy Spirit and Prominence combo with Holy Circle while Requiescat is active.\nRequires said combos to be activated to work.", PLD.JobID, PLD.RoyalAuthority, PLD.GoringBlade, PLD.Prominence)]
-        PaladinRequiescatFeature = 63,
+        [SecretCustomCombo]
+        [CustomComboInfo("Confiteor Feature", "Replace Holy Spirit/Circle with Confiteor when Requiescat has one stack left. Includes Confiteor combo.", PLD.JobID, PLD.HolySpirit, PLD.HolyCircle)]
+        PaladinConfiteorFeature = 68,
+
+        #endregion
+        // ====================================================================================
+        #region REAPER
 
         [OrderedEnum]
-        [SecretCustomCombo]
-        [CustomComboInfo("Confiteor Feature", "Replace Holy Spirit/Circle with Confiteor while MP is under 4000 and Requiescat is up.", PLD.JobID, PLD.HolySpirit, PLD.HolyCircle)]
-        PaladinConfiteorFeature = 68,
+        [CustomComboInfo("Slice Combo", "Replace Slice with its combo chain.", RPR.JobID, RPR.Slice)]
+        ReaperSliceCombo = 113,
+
+        [OrderedEnum]
+        [CustomComboInfo("Scythe Combo", "Replace Spinning Scythe with its combo chain.", RPR.JobID, RPR.SpinningScythe)]
+        ReaperScytheCombo = 114,
+
+        [OrderedEnum]
+        [CustomComboInfo("Enshroud Communio Feature", "Replace Enshroud with Communio when Enshrouded.", RPR.JobID, RPR.Enshroud)]
+        ReaperEnshroudCommunioFeature = 115,
 
         #endregion
         // ====================================================================================
@@ -360,6 +385,10 @@ namespace XIVComboExpandedestPlugin
 
         #endregion
         // ====================================================================================
+        #region SAGE
+
+        #endregion
+        // ====================================================================================
         #region SAMURAI
 
         [OrderedEnum]
@@ -383,14 +412,6 @@ namespace XIVComboExpandedestPlugin
         SamuraiOkaCombo = 15,
 
         [OrderedEnum]
-        [CustomComboInfo("Seigan to Third Eye", "Replace Seigan with Third Eye when not procced.", SAM.JobID, SAM.Seigan)]
-        SamuraiThirdEyeFeature = 51,
-
-        [OrderedEnum]
-        [CustomComboInfo("Jinpu/Shifu Feature", "Replace Meikyo Shisui with Jinpu or Shifu depending on what is needed.", SAM.JobID, SAM.MeikyoShisui)]
-        SamuraiJinpuShifuFeature = 72,
-
-        [OrderedEnum]
         [ConflictingCombos(SamuraiIaijutsuTsubameGaeshiFeature)]
         [CustomComboInfo("Tsubame-gaeshi to Iaijutsu", "Replace Tsubame-gaeshi with Iaijutsu when Sen is empty.", SAM.JobID, SAM.TsubameGaeshi)]
         SamuraiTsubameGaeshiIaijutsuFeature = 91,
@@ -410,6 +431,14 @@ namespace XIVComboExpandedestPlugin
         [CustomComboInfo("Iaijutsu to Shoha", "Replace Iaijutsu with Shoha when meditation is 3.", SAM.JobID, SAM.Iaijutsu)]
         SamuraiIaijutsuShohaFeature = 102,
 
+        [OrderedEnum]
+        [CustomComboInfo("Kyuten to Shoha II", "Replace Hissatsu: Kyuten with Shoha II when Meditation is full.", SAM.JobID, SAM.Kyuten)]
+        SamuraiShoha2Feature = 116,
+
+        [OrderedEnum]
+        [CustomComboInfo("Ikishoten Namikiri Feature", "Replace Ikishoten with Ogi Namikiri and then Kaeshi Namikiri when available.", SAM.JobID, SAM.Ikishoten)]
+        SamuraiIkishotenNamikiriFeature = 117,
+
         #endregion
         // ====================================================================================
         #region SCHOLAR
@@ -427,12 +456,8 @@ namespace XIVComboExpandedestPlugin
         #region SUMMONER
 
         [OrderedEnum]
-        [CustomComboInfo("Demi-summon combiners", "Dreadwyrm Trance, Summon Bahamut, and Firebird Trance are now one button.\nDeathflare, Enkindle Bahamut, and Enkindle Phoenix are now one button", SMN.JobID, SMN.DreadwyrmTrance, SMN.Deathflare)]
+        [CustomComboInfo("Enkindle/Summon Switch", "When Bahamut/Phoenix are summoned, Enkindle Bahamut/Phoenix will replace Summon Bahamut/Phoenix", SMN.JobID, SMN.SummonBahamut, SMN.SummonPhoenix)]
         SummonerDemiCombo = 28,
-
-        [OrderedEnum]
-        [CustomComboInfo("Brand of Purgatory Combo", "Replaces Fountain of Fire with Brand of Purgatory when under the affect of Hellish Conduit", SMN.JobID, SMN.Ruin1, SMN.Ruin3)]
-        SummonerBoPCombo = 38,
 
         [OrderedEnum]
         [CustomComboInfo("ED Fester", "Change Fester into Energy Drain when out of Aetherflow stacks", SMN.JobID, SMN.Fester)]
@@ -441,10 +466,6 @@ namespace XIVComboExpandedestPlugin
         [OrderedEnum]
         [CustomComboInfo("ES Painflare", "Change Painflare into Energy Syphon when out of Aetherflow stacks", SMN.JobID, SMN.Painflare)]
         SummonerESPainflareCombo = 40,
-
-        [OrderedEnum]
-        [CustomComboInfo("Demi-Summon Combiners Ultra", "Dreadwyrm Trance, Summon Bahamut, Firebird Trance, Deathflare, Enkindle Bahamut, and Enkindle Phoenix are now one button.\nRequires Demi-Summon Combiners feature.", SMN.JobID, SMN.DreadwyrmTrance)]
-        SummonerDemiComboUltra = 93,
 
         #endregion
         // ====================================================================================
@@ -477,6 +498,10 @@ namespace XIVComboExpandedestPlugin
         [OrderedEnum]
         [CustomComboInfo("Nascent Flash Feature", "Replace Nascent Flash with Raw intuition when level synced below 76", WAR.JobID, WAR.NascentFlash)]
         WarriorNascentFlashFeature = 96,
+
+        [OrderedEnum]
+        [CustomComboInfo("Primal Rend Feature", "Replace Inner Beast and Steel Cyclone with Primal Rend when available", WAR.JobID, WAR.InnerBeast, WAR.SteelCyclone)]
+        WarriorPrimalRendFeature = 118,
 
         #endregion
         // ====================================================================================

@@ -9,13 +9,16 @@ If you would like to use this plugin, you can get it from this repo: `https://gi
 
 ## Additions added (all optional!)
 
+***Bold means added with Endwalker!***
+~~Strikethrough means removed with Endwalker.~~
+
 * MCH/PLD/SMN/etc won't have action upgrade traits break due to unfinished job quests conflicting with XIVCombo features anymore.
-* Respective raises on RDM/SMN/SCH/WHM/AST get replaced with Swiftcast when it is off cooldown (and Dualcast isn't up).
+* Respective raises on RDM/SMN/SCH/WHM/AST/SGE get replaced with Swiftcast when it is off cooldown (and Dualcast isn't up).
 * Cure 2 becomes Cure when synced below level 30
 * Cure 2 and Medica become Afflatus Solace and Rapture respectively when lilies are available
 * Benefic 2 becomes Benefic when synced below level 26
-* Minor Arcana becomes Sleeve Draw when a card is not drawn.
-* Single-target and AoE combos become Holy Spirit/Circle when Requiescat is up
+* ~~Minor Arcana becomes Sleeve Draw when a card is not drawn.~~
+* ~~Single-target and AoE combos become Holy Spirit/Circle when Requiescat is up~~
 * Dragon Kick becomes Bootshine while a form is up and Leaden Fist is up.
 * AoE Overcap prevention on GNB has also been added to WAR/DRK.
 * Burst Strike will now turn into Bloodfest if gauge is empty.
@@ -24,10 +27,13 @@ If you would like to use this plugin, you can get it from this repo: `https://gi
 * Nascent Flash will turn into Raw Intuition when you are below level 76.
 * Meikyo will be replaced by Jinpu/Shifu while its buff is up.
 * Shoha will replace Iaijutsu/Tsubame when Meditation gauge is full.
+* ***Shoha II will replace Hissatsu: Kyuten when Meditation gauge is full.***
 * Tsubame becomes Iaijutsu when Sen gauge isn't empty.
-* Fire 1 becomes Fire 3 outside of Astral Fire and when Firestarter proc is up. Also replaces Enochian with Fire 1/3 before you get Fire 4 when in AF (if Enochian is up or you don't have it yet).
-* Blizzard 1 becomes Blizzard 3 when outside of Umbral Ice. Freeze now becomes Blizzard 2 when level-synced, as well.
-* All Bahamut/Phoenix/Dreadwyrm-related actions on Summoner are now on one button.
+* Fire 1 becomes Fire 3 outside of Astral Fire and when Firestarter proc is up. ~~Also replaces Enochian with Fire 1/3 before you get Fire 4 when in AF (if Enochian is up or you don't have it yet).~~
+* Blizzard 1 becomes Blizzard 3 when outside of Umbral Ice. ~~Freeze now becomes Blizzard 2 when level-synced, as well.~~
+* ***Flare and Freeze will switch depending on if you are in Astral Fire/Umbral Ice.***
+* ~~All Bahamut/Phoenix/Dreadwyrm-related actions on Summoner are now on one button.~~
+* ***Enkindle and Summon Bahamut/Phoenix/Dreadwyrm Trance now share the same button.***
 * Verstone/Verfire will turn into Veraero/Verthunder when Dualcast/Swiftcast is up, with an additional feature that makes Verfire Verthunder outside of combat for openers.
 * When Suiton (or Hidden) is up, Trick Attack will replace Kassatsu.*
 * In the same vein, Ten Chi Jin (the move) will turn into Meisui while Suiton is up*.
@@ -35,7 +41,8 @@ If you would like to use this plugin, you can get it from this repo: `https://gi
 * Hide becomes Mug while in combat.
 * Your combos can become Ninjutsu while you are using Mudra (so you don't have to bind Ninjutsu separately, it doesn't actually do the Mudras for you).
 * Bard DoTs alternate between each other and also turn into Iron Jaws when both are up.
-* Burst Shot/Quick Nock will turn into Apex Arrow when gauge is full.
+* Burst Shot/Quick Nock***/Ladonsbite*** will turn into Apex Arrow when gauge is full.
+* ***Quick Nock/Ladonsbite will turn into Shadowbite when Shadowbite is ready.***
 * Cascade, Flourish, and both Fan Dances change into dance steps while dancing. This helps ensure you can still dance with combos on, without using auto dance. You can additionally configure which actions you want to be replaced by dance steps, if you so desire.
 
 For actions marked with a *, you may want Remind Me or a similar plugin to keep track of cooldowns while they are invisible.

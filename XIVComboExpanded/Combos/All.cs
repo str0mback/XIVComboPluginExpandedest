@@ -12,7 +12,8 @@ namespace XIVComboExpandedestPlugin.Combos
             Resurrection = 173,
             Verraise = 7523,
             Raise = 125,
-            Ascend = 3603;
+            Ascend = 3603,
+            Egeiro = 24287;
 
         public static class Buffs
         {
@@ -33,7 +34,7 @@ namespace XIVComboExpandedestPlugin.Combos
 
         protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
         {
-            if (actionID == All.Raise || actionID == All.Resurrection || actionID == All.Ascend || actionID == All.Verraise)
+            if (actionID == All.Raise || actionID == All.Resurrection || actionID == All.Ascend || actionID == All.Verraise || actionID == All.Egeiro)
             {
                 var swiftCD = GetCooldown(All.Swiftcast);
                 if ((swiftCD.CooldownRemaining == 0 && !HasEffect(RDM.Buffs.Dualcast))

@@ -25,7 +25,7 @@ If you would like to use this plugin, you can get it from this repo: `https://gi
 * No Mercy will turn into Bow Shock, and then Sonic Break, while buff is active.*
 * Single-target combo and AoE combo on WAR will be replaced by Fell Cleave/Decimate during Inner Release.
 * Nascent Flash will turn into Raw Intuition when you are below level 76.
-* Meikyo will be replaced by Jinpu/Shifu while its buff is up.
+* ~~Meikyo will be replaced by Jinpu/Shifu while its buff is up.~~
 * Shoha will replace Iaijutsu/Tsubame when Meditation gauge is full.
 * ***Shoha II will replace Hissatsu: Kyuten when Meditation gauge is full.***
 * Tsubame becomes Iaijutsu when Sen gauge isn't empty.

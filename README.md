@@ -1,6 +1,6 @@
 # CURRENTLY OUTDATED
 
-This currently does not work with the latest version of Dalamud. A build will not be released publicly until the original XIVCombo is updated. This is out of respect, so please be patient.
+This currently does not work with the latest version of Dalamud. Please check https://github.com/attickdoor/XIVComboPlugin and https://github.com/daemitus/XIVComboPlugin for versions that will work sooner.
 
 # XIVComboPlugin Expandedest
 This is an expanded version of Daemitus's XIVCombo Expanded for personal use, that I am modifying for personal use by adding features that me and friends would like to use. These can be used in any fork you like, no credit needed. None of these features will be added to the original XIVCombo, so please do not bug the creator of that about it. Thank you Daemitus, attickdoor, goaaats, and everyone else who contributed to making this plugin possible. Additional thanks to ALymphocyte for coding help!
